@@ -22,5 +22,4 @@ int main(void)
 	while(1) // Second infinite while loop (flag != 0)
 	{
 	}
-	
 }
