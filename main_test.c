@@ -37,6 +37,17 @@ int main (void)
 
     while(1)
     {
+        // GPIO_WritePin(GPIOC, GPIO_PIN_NUM_13, GPIO_PIN_SET);
+
+        if(GPIO_ReadPin(GPIOA, GPIO_PIN_NUM_0) == GPIO_PIN_SET)
+        {
+            GPIO_WritePin(GPIOC, GPIO_PIN_NUM_13, GPIO_PIN_RESET);
+        }
+        else
+        {
+            GPIO_WritePin(GPIOC, GPIO_PIN_NUM_13, GPIO_PIN_SET);
+        }
+
         // Toggle LED state
         if(GPIO_ReadPin(GPIOA, GPIO_PIN_NUM_0) == GPIO_PIN_SET)
         {
@@ -56,3 +67,29 @@ int main (void)
 
     return 0;
 }
+
+
+///* Hello_world */
+////static uint8_t Hello_world;
+
+////int main ()
+////{
+////    Hello_world = 1;
+////    return 0;
+////}
+
+///* volatile */
+//static volatile uint8_t flag = 0;
+
+//int main(void)
+//{
+//	while (1)	// First infinite while loop (flag = 0)
+//	{
+//		if(flag)
+//			break;
+//	}
+//	while(1) // Second infinite while loop (flag != 0)
+//	{
+//	}
+//	
+//}

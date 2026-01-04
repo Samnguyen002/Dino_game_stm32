@@ -76,4 +76,7 @@ void GPIO_WritePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber, GPIO_PinState_t GP
 /* Read a value from GPIO_Pin */
 uint8_t GPIO_ReadPin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
 
+/* Toggle GPIO_Pin */
+void GPIO_TogglePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
+
 #endif

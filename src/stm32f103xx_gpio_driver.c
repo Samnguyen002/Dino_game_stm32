@@ -79,3 +79,14 @@ uint8_t GPIO_ReadPin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber)
 {
     return (uint8_t)((pGPIOx->IDR >> PinNumber) & 0x1U);
 }
+
+/**
+ * @brief 
+ * 
+ * @param pGPIOx 
+ * @param PinNumber 
+ */
+void GPIO_TogglePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber)
+{
+    pGPIOx->ODR ^= (0x01U << PinNumber);
+}
