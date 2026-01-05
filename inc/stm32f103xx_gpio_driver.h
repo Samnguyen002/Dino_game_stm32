@@ -82,4 +82,6 @@ void GPIO_TogglePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
 /* BSRR */
 void GPIO_WritePinBit(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber, GPIO_PinState_t GPIO_PinState);
 
+void GPIO_LockPin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
+
 #endif

@@ -35,25 +35,27 @@ int main (void)
 	GPIO_PC13_Init();
     GPIO_PA0_Init();
 
+    // GPIO_LockPin(GPIOC, GPIO_PIN_NUM_13);
+
+    // Turn on LED PC13
+    GPIO_WritePin(GPIOC, GPIO_PIN_NUM_13, GPIO_PIN_RESET);
+
     while(1)
     {
-        // Toggle LED state
+        // Read Button PA0 state
         if(GPIO_ReadPin(GPIOA, GPIO_PIN_NUM_0) == GPIO_PIN_SET)
         {
-            // Toggle LED
+            // Delay some ms
             for (int i = 0; i < 100000; i++);
             if (GPIO_ReadPin(GPIOA, GPIO_PIN_NUM_0) == GPIO_PIN_SET)
             {
-                GPIO_TogglePin(GPIOC, GPIO_PIN_NUM_13);
+                // Change Pin PC13 mode
+                // LED PC13 will be turned off if LCKR is not used for Output mode configuration
+                Blinky_LedPC13.GPIO_PinMode = GPIO_MODE_INPUT;
+                GPIO_Init(GPIOC, Blinky_LedPC13);
             }
-
-            // How to fix button debounce?
-            // Case 1: simple software delay:  1ms, 2ms, 5ms or ...
-            // Cas2 2: using Capacitorr: normally 0.1uF (100nF) for 1ms debounce.
-
         }
     }
 
-    
     return 0;
 }
