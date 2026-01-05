@@ -90,3 +90,22 @@ void GPIO_TogglePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber)
 {
     pGPIOx->ODR ^= (0x01U << PinNumber);
 }
+
+/**
+ * @brief 
+ * 
+ * @param pGPIOx 
+ * @param PinNumber 
+ * @param GPIO_PinState 
+ */
+void GPIO_WritePinBit(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber, GPIO_PinState_t GPIO_PinState)
+{
+    if(GPIO_PinState == GPIO_PIN_SET)
+    {
+        pGPIOx->BSRR |= (0X1U << PinNumber);
+    }
+    else
+    {
+        pGPIOx->BSRR |= (0X1U << (PinNumber + 16U));
+    }
+}
