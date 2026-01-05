@@ -67,21 +67,71 @@ typedef enum
 /* GPIO_ALFN */
 // #define  GPIO_MODE_AF_INPUT                     GPIO_MODE_INPUT          /* Alternate Function Input Mode         */
 
-/* GPIO_Init to initialize the GPIO pin configuration */
+/**
+ * @brief GPIO_Init to initialize the GPIO pin configuration arccording to the specified settings
+ * 
+ * @param pGPIOx Pointer to the GPIO port to be configured
+ * @param pGPIO_PinConf Structure that contains the configuration information of the specified GPIO pin
+ * 
+ * @return none
+ */
 void GPIO_Init(GPIO_Reg_def_t *pGPIOx, GPIO_PinConf_t pGPIO_PinConf);
 
-/* Write a value over GPIO_Pin */
+/**
+ * @brief Write or set/reset the specified GPIO pin (non-atomic).
+ *
+ * @param pGPIOx Pointer to the GPIO port
+ * @param PinNumber Pin number to write (0..15)
+ * @param GPIO_PinState Desired pin state: GPIO_PIN_SET or GPIO_PIN_RESET
+ *
+ * @return none
+ */
 void GPIO_WritePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber, GPIO_PinState_t GPIO_PinState);
 
-/* Read a value from GPIO_Pin */
+/**
+ * @brief Read the input state of the specified GPIO pin.
+ *
+ * @param pGPIOx Pointer to the GPIO port
+ * @param PinNumber Pin number to read (0..15)
+ *
+ * @return uint8_t Returns 0 (GPIO_PIN_RESET) or 1 (GPIO_PIN_SET)
+ */
 uint8_t GPIO_ReadPin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
 
-/* Toggle GPIO_Pin */
+/**
+ * @brief Toggle (invert) the output state of the specified GPIO pin.
+ *
+ * @param pGPIOx Pointer to the GPIO port
+ * @param PinNumber Pin number to toggle (0..15)
+ *
+ * @return none
+ */
 void GPIO_TogglePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
 
-/* BSRR */
+/**
+ * @brief Atomically set or reset a GPIO pin using BSRR/BRR register.
+ *
+ * This function uses the port's BSRR (and BRR) registers to perform an atomic
+ * set/reset which is safe in interrupt contexts and from multiple masters.
+ *
+ * @param pGPIOx Pointer to the GPIO port
+ * @param PinNumber Pin number to modify (0..15)
+ * @param GPIO_PinState Desired pin state: GPIO_PIN_SET to set, GPIO_PIN_RESET to reset
+ *
+ * @return none
+ */
 void GPIO_WritePinBit(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber, GPIO_PinState_t GPIO_PinState);
 
+/**
+ * @brief Lock the configuration of the specified GPIO pin.
+ *
+ * After locking, the pin configuration cannot be modified until the next reset.
+ *
+ * @param pGPIOx Pointer to the GPIO port
+ * @param PinNumber Pin number to lock (0..15)
+ *
+ * @return none
+ */
 void GPIO_LockPin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
 
 #endif
