@@ -1,9 +1,23 @@
 #include "stm32f103xx.h"
  
-GPIO_PinConf_t Blinky_LedPC13;
-GPIO_PinConf_t Button_PA0;
+static GPIO_PinConf_t Blinky_LedPC13;
+static GPIO_PinConf_t Button_PA0;
 
-void GPIO_PC13_Init(void)
+/**
+ * @brief Simple delay function. It uses for loop to excute a delay.
+ *        Change the number of loop cycle to increase or decrease the delay time.
+ * 
+ */
+static void SimpleDelay(void)
+{
+    uint32_t delay_count;
+    for (delay_count = 0; delay_count < 20000000; delay_count++)
+    {
+
+    }
+}
+
+static void GPIO_PC13_Init(void)
 {
 
     /* Enable clock for GPIOC */
@@ -18,7 +32,8 @@ void GPIO_PC13_Init(void)
     GPIO_Init(GPIOC, Blinky_LedPC13);
 }
 
-void GPIO_PA0_Init(void)
+/* Button */
+static void GPIO_PA0_Init(void)
 {
     RCC_GPIOA_CLK_EN();
 
@@ -26,8 +41,10 @@ void GPIO_PA0_Init(void)
     Button_PA0.GPIO_PinMode = GPIO_MODE_INPUT;
     Button_PA0.GPIO_PinConf = GPIO_CNF_INPUT_PU_PD;
     Button_PA0.GPIO_PUPD = GPIO_NO_PUPD;
+    Button_PA0.GPIO_EdgeTrigger = GPIO_IT_EDGE_RT;
 
     GPIO_Init(GPIOA, Button_PA0);
+    GPIO_IT_Init(GPIOA, Button_PA0, 1);
 }
 
 int main (void)
@@ -35,27 +52,30 @@ int main (void)
 	GPIO_PC13_Init();
     GPIO_PA0_Init();
 
-    // GPIO_LockPin(GPIOC, GPIO_PIN_NUM_13);
-
-    // Turn on LED PC13
-    GPIO_WritePin(GPIOC, GPIO_PIN_NUM_13, GPIO_PIN_RESET);
-
     while(1)
     {
-        // Read Button PA0 state
-        if(GPIO_ReadPin(GPIOA, GPIO_PIN_NUM_0) == GPIO_PIN_SET)
-        {
-            // Delay some ms
-            for (int i = 0; i < 100000; i++);
-            if (GPIO_ReadPin(GPIOA, GPIO_PIN_NUM_0) == GPIO_PIN_SET)
-            {
-                // Change Pin PC13 mode
-                // LED PC13 will be turned off if LCKR is not used for Output mode configuration
-                Blinky_LedPC13.GPIO_PinMode = GPIO_MODE_INPUT;
-                GPIO_Init(GPIOC, Blinky_LedPC13);
-            }
-        }
+        // Do nothing
     }
 
     return 0;
+}
+
+/**
+ * @brief This function is ISR function of respective EXTIO interrupt.
+ * 
+ */
+static void EXTI0_IRQHandler(void)
+{
+    /* Is the corresponding bit in EXTI_PR set or not */
+    if ((EXTI->PR >> Button_PA0.GPIO_PinNumber) & 0x1U)
+    {
+        /* Clear the pending bit by writing 1 */
+        EXTI->PR |= (0x01U << Button_PA0.GPIO_PinNumber);
+    }
+
+    SimpleDelay();
+    if (GPIO_ReadPin(GPIOA, GPIO_PIN_NUM_0) == GPIO_PIN_SET)
+    {
+        GPIO_TogglePin(GPIOC, GPIO_PIN_NUM_13);
+    }
 }

@@ -32,6 +32,29 @@ typedef struct
     volatile uint32_t CFGR2;
 } RCC_Reg_def_t;
 
+/* AFIO register definition struct */
+typedef struct 
+{
+    volatile uint32_t EVCR;
+    volatile uint32_t MAPR;
+    // volatile uint32_t EXTICR1;
+    // volatile uint32_t EXTICR2;
+    // volatile uint32_t EXTICR3
+    // volatile uint32_t EXTICR4;
+    volatile uint32_t EXTICR[4];
+    volatile uint32_t MAPR2;
+} AFIO_Reg_def_t;
+
+/* EXTI register definition struct */
+typedef struct 
+{
+    volatile uint32_t IMR;
+    volatile uint32_t EMR;
+    volatile uint32_t RTSR;
+    volatile uint32_t FTSR;
+    volatile uint32_t SWIER;
+    volatile uint32_t PR;
+} EXTI_Reg_def_t;
 
 /* Define the pointer to indicate the base address of GPIO periperals*/
 #define GPIOA ((GPIO_Reg_def_t *) 0x40010800UL)     // 0x40010800UL = (APB2_BASEADDR + 0x0800UL)
@@ -44,7 +67,7 @@ typedef struct
 
 /* Define the base address of the APB2 bus, it's the base address of AFIO peripheral
 And you know, the base address of GPIO ports = APB2_BASEADDR + OFFSET (2 bytes last)*/
-#define APB2_BASEADDR 0x40010000UL
+#define APB2_BASEADDR 0x40010000UL      
 
 /* Define AHB_BASEADDR */
 #define AHB_BASEADDR 0x40018000UL
@@ -52,6 +75,12 @@ And you know, the base address of GPIO ports = APB2_BASEADDR + OFFSET (2 bytes l
 /* Define Reset and clock control base address */
 #define RCC ((RCC_Reg_def_t *) AHB_BASEADDR + 0x9000UL)
 // #define RCC ((RCC_Reg_def_t *) 0x40021000UL)
+
+/* Define the AFIO peripheral base address */
+#define AFIO ((AFIO_Reg_def_t *) (APB2_BASEADDR + 0x0000UL))
+
+/* Define the EXTI peripgeral base address */
+#define EXTI ((EXTI_Reg_def_t *) (APB2_BASEADDR + 0x0400UL))
 
 /* GPIO and Alternate function clock enable */
 #define RCC_AFIO_CLK_EN()    (RCC->APB2ENR |= (0x01U << 0u))

@@ -2,16 +2,18 @@
 #define STM32F103XX_GPIO_DRIVER_H
 #include <stdint.h>
 #include "stm32f103xx.h"
+#include "cortexM3.h"
 
 /* Ctrl + Alt + arrow down to select multiple lines */
 
 /* GPIO pin configuration stuct*/
 typedef struct 
 {
-    uint8_t GPIO_PinNumber;         /* The GPIO Pin to be configured: 16 pins */
-    uint8_t GPIO_PinMode;           /* Specifies the operating mode of the selected pin with bit-field MODEy */
-    uint8_t GPIO_PinConf;           /* Specifies the configuration bits with bit-field CNFy */
-    uint8_t GPIO_PUPD;              /* Specifies the pull-up/pull-down activation of the input pin*/
+    uint8_t GPIO_PinNumber;         // The GPIO Pin to be configured: 16 pins 
+    uint8_t GPIO_PinMode;           // Specifies the operating mode of the selected pin with bit-field MODEy
+    uint8_t GPIO_PinConf;           // Specifies the configuration bits with bit-field CNFy
+    uint8_t GPIO_PUPD;              // Specifies the pull-up/pull-down activation of the input pin
+    uint8_t GPIO_EdgeTrigger;       // Specifies the edge trigger interrupt/event for the selected pin
     // Can add Alternate function, analog mode, floating input, etc.
     // Output Type: Push-pull, Open-drain, etc.
 } GPIO_PinConf_t;
@@ -66,6 +68,32 @@ typedef enum
 
 /* GPIO_ALFN */
 // #define  GPIO_MODE_AF_INPUT                     GPIO_MODE_INPUT          /* Alternate Function Input Mode         */
+
+/* GPIO edge trigger for interrupt/event */
+#define GPIO_IT_EDGE_FT     0U      // Falling trigger
+#define GPIO_IT_EDGE_RT     1U      // Rising trigger
+#define GPIO_IT_EDGE_RFT    2U      // Rising and Falling trigger
+
+/* Macro to get GPIO port code for AFIO_EXTICR register configuration 
+return 0 (default value to avoid affecting other bits in registers)*/
+#define AFIO_EXTICR_POTCODE(pGPIOx)\
+        ((pGPIOx == GPIOA) ? 0U : \
+         (pGPIOx == GPIOB) ? 1U : \
+         (pGPIOx == GPIOC) ? 2U : \
+         (pGPIOx == GPIOD) ? 3U : \
+         (pGPIOx == GPIOE) ? 4U : \
+         (pGPIOx == GPIOF) ? 5U : \
+         (pGPIOx == GPIOG) ? 6U : 0U)
+
+/* Indicates which PinNumber corresponeds to which EXTI line*/
+#define GPIO_PIN_TO_IRQ(GPIO_PinNumber)\
+        ((GPIO_PinNumber == GPIO_PIN_NUM_0) ? IRQ_NUM_EXTI0 :   \
+         (GPIO_PinNumber == GPIO_PIN_NUM_1) ? IRQ_NUM_EXTI1 :   \
+         (GPIO_PinNumber == GPIO_PIN_NUM_2) ? IRQ_NUM_EXTI2 :   \
+         (GPIO_PinNumber == GPIO_PIN_NUM_3) ? IRQ_NUM_EXTI3 :   \
+         (GPIO_PinNumber == GPIO_PIN_NUM_4) ? IRQ_NUM_EXTI4 :   \
+         ((GPIO_PinNumber <= 9U) && (GPIO_PinNumber >= 5U)) ? IRQ_NUM_EXTI9_5 : \
+         ((GPIO_PinNumber <= 15U) && (GPIO_PinNumber >= 10U)) ? IRQ_NUM_EXTI15_10 : IRQ_NUM_EXTI0)
 
 /**
  * @brief GPIO_Init to initialize the GPIO pin configuration arccording to the specified settings
@@ -133,5 +161,15 @@ void GPIO_WritePinBit(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber, GPIO_PinState_t
  * @return none
  */
 void GPIO_LockPin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber);
+
+/**
+ * @brief Initialize GPIO pin for external interrupt (EXTI) functionality.
+ *        Include EXTI settings and NVIC configuration.
+ * 
+ * @param pGPIOx Pointer to the GPIO port
+ * @param pGPIO_PinConf Structure that contains the configuration information of the specified GPIO pin (INPUT mode only)
+ * @param IRQPriority Interrupt priority of the selected pin
+ */
+void GPIO_IT_Init(GPIO_Reg_def_t *pGPIOx, GPIO_PinConf_t pGPIO_PinConf, uint8_t IRQPriority);
 
 #endif
