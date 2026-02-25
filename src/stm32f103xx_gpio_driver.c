@@ -8,7 +8,7 @@ void GPIO_Init(GPIO_Reg_def_t *pGPIOx, GPIO_PinConf_t pGPIO_PinConf)
     uint32_t position = 0;
     uint32_t value = 0;
 
-    if(pGPIO_PinConf.GPIO_PinNumber <= 7)
+    if (pGPIO_PinConf.GPIO_PinNumber <= 7)
     {
         position = pGPIO_PinConf.GPIO_PinNumber * 4;
 
@@ -30,7 +30,7 @@ void GPIO_Init(GPIO_Reg_def_t *pGPIOx, GPIO_PinConf_t pGPIO_PinConf)
     }
 
     /* If input with pull-up/pull-down: select pull by ODR bit */
-    if((pGPIO_PinConf.GPIO_PinMode == GPIO_MODE_INPUT) && (pGPIO_PinConf.GPIO_PinConf == GPIO_CNF_INPUT_PU_PD))
+    if ((pGPIO_PinConf.GPIO_PinMode == GPIO_MODE_INPUT) && (pGPIO_PinConf.GPIO_PinConf == GPIO_CNF_INPUT_PU_PD))
     {
         if(pGPIO_PinConf.GPIO_PUPD == GPIO_PU)
         {
@@ -67,7 +67,7 @@ void GPIO_TogglePin(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber)
 
 void GPIO_WritePinBit(GPIO_Reg_def_t *pGPIOx, uint8_t PinNumber, GPIO_PinState_t GPIO_PinState)
 {
-    if(GPIO_PinState == GPIO_PIN_SET)
+    if (GPIO_PinState == GPIO_PIN_SET)
     {
         pGPIOx->BSRR |= (0X1U << PinNumber);
     }
